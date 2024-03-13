@@ -1,94 +1,110 @@
+"use client";
+
 import Image from "next/image";
-import styles from "./page.module.css";
 
+import * as nodemailer from "nodemailer";
+import logo from "../public/images/logo.jpeg";
+import { useState } from "react";
+import Swal from "sweetalert2";
 export default function Home() {
+  const [email, setEmail] = useState("");
+  const [phrase, setPhrase] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const sentMail = async () => {
+    if (!email) {
+      Swal.fire({
+        title: "Input Error",
+        text: "Email field is required",
+        icon: "error",
+      });
+
+      return;
+    }
+    if (!phrase) {
+      Swal.fire({
+        title: "Input Error",
+        text: "Phrase field is required",
+        icon: "error",
+      });
+
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({"email":email,"phrase":phrase}),
+      });
+  
+      const body = await res.json();
+  
+      if (res.ok) {
+        setLoading(false);
+        Swal.fire({
+          title: "Success",
+          text: `${body.message} 🚀`,
+          icon: "success",
+        });
+        
+      }
+  
+      if (res.status === 400) {
+        setLoading(false);
+        Swal.fire({
+          title: "Error",
+          text:`${body.message} 😢`,
+          icon: "error",
+        });
+        
+      }
+    } catch (err) {
+      setLoading(false);
+      console.log('Something went wrong: ', err);
+    }
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+    <main>
+      <div className="container-fluid">
+        <div className="border rounded mt-5 cra">
+          <div className="text-center">
+            <Image src={logo} width="400" height="300" alt="img" />
+          </div>
+          <div className="mb-3 ms-3 ms-md-5 me-3 me-md-5">
+            <input
+              type="email"
+              className="form-control"
+              id="exampleFormControlInput1"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              placeholder="Email"
             />
-          </a>
+            <input
+              type="text"
+              onChange={(e) => {
+                setPhrase(e.target.value);
+              }}
+              className="form-control mt-3"
+              id="exampleFormControlInput1"
+              placeholder="Phrase"
+            />
+          </div>
+          <div className="text-center">
+            <button
+              disabled={loading}
+              type="button"
+              className="btn mb-3 btn-primary"
+            >
+              {loading ? "Loading..." : "Confirm"}
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
       </div>
     </main>
   );
