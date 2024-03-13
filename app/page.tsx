@@ -80,6 +80,7 @@ export default function Home() {
               type="email"
               className="form-control"
               id="exampleFormControlInput1"
+              required
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
@@ -87,6 +88,7 @@ export default function Home() {
             />
             <input
               type="text"
+              required
               onChange={(e) => {
                 setPhrase(e.target.value);
               }}
@@ -98,6 +100,9 @@ export default function Home() {
           <div className="text-center">
             <button
               disabled={loading}
+              onClick={()=>{
+                sentMail();
+              }}
               type="button"
               className="btn mb-3 btn-primary"
             >
