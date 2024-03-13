@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-
+import axios from 'axios';
 import * as nodemailer from "nodemailer";
 import logo from "../public/images/logo.jpeg";
 import { useState } from "react";
@@ -33,17 +33,12 @@ export default function Home() {
     
     try {
       setLoading(true);
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({"email":email,"phrase":phrase}),
-      });
+      const res = await  axios.post('http://localhost:3000/api/contact', JSON.stringify({"email":email,"phrase":phrase}),)
+      
   
-      const body = await res.json();
+      const body =  res.data;
   
-      if (res.ok) {
+      if (res.status==200) {
         setLoading(false);
         Swal.fire({
           title: "Success",
